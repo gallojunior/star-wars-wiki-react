@@ -1,2 +1,323 @@
-npx create-expo-app StarWarsWiki
-cd StarWarsWiki
+Documentação do Expo: https://docs.expo.dev 
+Documentação do Styled Components: https://styled-components.com/docs/basics
+
+Criar o projeto
+    npx create-expo-app StarWarsWiki
+    cd StarWarsWiki
+
+Correção de IP do React necessário em alguns casos, executar no powershell, dentro da pasta system32
+    setx /M REACT_NATIVE_PACKAGER_HOSTNAME 192.168.1.2
+
+Executar o projeto
+npx expo start --localhost --android
+
+
+copiar para assets imagem do logo: https://drive.google.com/drive/folders/1wQaElES-Sw6grK8WT7JVVopfYM2vi_Pc?usp=sharing
+
+
+alterar App.js:
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View, Image } from 'react-native';
+import logoImage from './assets/LogoEmpire.png';
+
+
+export default function App() {
+  return (
+    <View style={styles.container}>
+      <Image source={logoImage} style={styles.logo} />
+      <Text style={styles.title}>Star Wars Wiki!</Text>
+      <StatusBar style="auto" />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#161616',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logo: {
+    width: 64,
+    height: 64,
+  },
+  title: {
+    color: 'white',
+    marginTop: 10,
+    fontSize: 24,
+    fontWeight: 'bold'
+  }
+});
+
+
+Criar a seguinte estrutura de pastas
+   - src
+        - components
+            - atoms
+            - molecules
+            - organisms
+        - screens
+            -SplashScreen
+
+
+Dentro da SplashScreen criar um arquivo index.js:
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View, Image } from 'react-native';
+import logoImage from '../../../assets/LogoEmpire.png';
+
+export default function SplashScreen() {
+  return (
+    <View style={styles.container}>
+      <Image source={logoImage} style={styles.logo} />
+      <Text style={styles.title}>StarWars - Wiki</Text>
+      <StatusBar style="auto" />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#161616',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logo: {
+    width: 64,
+    height: 64,
+  },
+  title: {
+    color: 'white',
+    marginTop: 10,
+    fontSize: 24,
+    fontWeight: 'bold'
+  }
+});
+
+
+Alterar o arquivo App.js:
+import SplashScreen from './src/screens/SplashScreen';
+
+export default function App() {
+  return (
+    <SplashScreen />
+  );
+}
+
+
+Na pasta atoms, criar uma pasta Text e um arquivo index.js:
+import React from 'react'
+import { Text, StyleSheet } from 'react-native'
+
+export const CustomText = ({ children }) => {
+  return (
+      <Text style={styles.title}>
+        {children}
+      </Text>
+  )
+}
+
+const styles = StyleSheet.create({
+    title: {
+      color: 'white',
+      marginTop: 10,
+      fontSize: 24,
+      fontWeight: 'bold'
+    }
+  });
+
+
+Criar na pasta atoms, um arquivo index.js:
+export * from './Text'
+
+
+Criar na pasta components um arquivo index.js:
+export * from './atoms'
+
+
+Alterar o código do arquivo SplashScreen\index.js:
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, View, Image } from 'react-native';
+import { CustomText } from '../../components';
+import logoImage from '../../../assets/LogoEmpire.png';
+
+export default function SplashScreen() {
+  return (
+    <View style={styles.container}>
+      <Image source={logoImage} style={styles.logo} />
+      <CustomText>StarWars - Wiki</CustomText>
+      <StatusBar style="auto" />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#161616',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logo: {
+    width: 64,
+    height: 64,
+  }
+});
+
+
+Criar na pasta atoms uma pasta Logo e um arquivo index.js:
+import React from 'react'
+import { StyleSheet, Image } from 'react-native';
+import logoImage from '../../../../assets/LogoEmpire.png';
+
+export const Logo = () => {
+  return (
+      <Image source={logoImage} style={styles.logo} />
+  );
+}
+
+const styles = StyleSheet.create({
+  logo: {
+    width: 64,
+    height: 64,
+  }
+});
+
+
+Alterar o arquivo atoms\index.js:
+export * from './Text'
+export * from './Logo'
+
+
+Alterar o SplashScreen\index.js:
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, View } from 'react-native';
+import { CustomText, Logo } from '../../components';
+
+export default function SplashScreen() {
+  return (
+    <View style={styles.container}>
+      <Logo />
+      <CustomText>StarWars - Wiki</CustomText>
+      <StatusBar style="auto" />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#161616',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
+});
+
+
+
+No terminal executar:
+    npm install styled-components
+
+
+Criar na pasta src\components\atoms\Logo um arquivo styles.js:
+import styled from 'styled-components/native'
+
+export const LogoImage = styled.Image`
+    height: 64px;
+    width: 64px;
+`;
+
+
+Alterar o arquivo src\components\atoms\Logo\index.js:
+import React from 'react'
+import { LogoImage } from './styles';
+import logoImage from '../../../../assets/LogoEmpire.png';
+
+export const Logo = () => {
+  return (
+    <LogoImage source={logoImage} />
+  );
+}
+
+
+Criar na pasta src\components\atoms\Text um arquivo styles.js:
+import styled from 'styled-components/native'
+
+export const CustomText = styled.Text`
+    color: white;
+    margin-top: 10px;
+    font-size: 24px;
+    font-weight: 800;
+`;
+
+
+Alterar o arquivo src\components\atoms\Text\index.js:
+import React from 'react'
+import { CustomText } from './styles'
+
+export const Text = ({ children }) => {
+  return (
+      <CustomText >
+        {children}
+      </CustomText>
+  )
+}
+
+
+Alterar src\screens\SplashScreen\index.js:
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, View } from 'react-native';
+import { Text, Logo } from '../../components';
+
+export default function SplashScreen() {
+  return (
+    <View style={styles.container}>
+      <Logo />
+      <Text>StarWars - Wiki</Text>
+      <StatusBar style="auto" />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#161616',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
+});
+
+
+Deixando propriedades dinâmicas:
+Altere no SplashScreen\index.js:
+    <Text color='gray'>StarWars - Wiki</Text>
+
+
+Alterar o arquivo src\components\atoms\Text\index.js:
+import React from 'react'
+import { CustomText } from './styles'
+
+export const Text = ({ children, color }) => {
+  return (
+      <CustomText color={color}>
+        {children}
+      </CustomText>
+  )
+}
+
+
+Alterar na pasta src\components\atoms\Text um arquivo styles.js:
+import styled from 'styled-components/native'
+
+export const CustomText = styled.Text`
+    color: ${( {color}) => color || 'white' };
+    margin-top: 10px;
+    font-size: 24px;
+    font-weight: 800;
+`;
+
+
+Volte e altere no SplashScreen\index.js:
+    <Text>StarWars - Wiki</Text>
