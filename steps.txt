@@ -1,6 +1,8 @@
 Documentação do Expo: https://docs.expo.dev 
 Documentação do Styled Components: https://styled-components.com/docs/basics
 
+Link do Figma com cores e logo do projeto: https://www.figma.com/file/FcJqDIFJpy43Zik4QhoJ39/DevRiseWeek---StarWars?type=design&node-id=566-2&mode=design&t=1F28Xy5ni5S3wAh2-0
+
 Criar o projeto
     npx create-expo-app StarWarsWiki
     cd StarWarsWiki
