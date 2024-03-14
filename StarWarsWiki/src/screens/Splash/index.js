@@ -2,12 +2,12 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import { Text, Logo } from '../../components';
 
-export default function SplashScreen() {
+export const Splash = () => {
   return (
     <View style={styles.container}>
       <Logo />
       <Text>StarWars - Wiki</Text>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
     </View>
   );
 }

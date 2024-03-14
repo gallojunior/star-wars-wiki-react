@@ -323,3 +323,217 @@ export const CustomText = styled.Text`
 
 Volte e altere no SplashScreen\index.js:
     <Text>StarWars - Wiki</Text>
+
+
+
+
+npm install eslint prettier eslint-config-universe @babel/plugin-syntax-decorators @react-native-community/eslint-config babel-plugin-root-import eslint-import-resolver-babel-plugin-root-import eslint-plugin-import eslint-plugin-jsx-a11y eslint-plugin-react eslint-plugin-react-hooks --save-dev
+
+
+Criar o arquivo .eslinrc.js:
+module.exports = {
+  root: true,
+  extends: '@react-native-community',
+  plugins: ['react', 'react-hooks', 'import'],
+  settings: {
+    'import/resolver': {
+      'babel-plugin-root-import': {
+        rootPathSuffix: 'src',
+      },
+    },
+  },
+  rules: {
+    semi: [2, 'never'],
+    'no-extra-boolean-cast': 'off',
+  },
+}
+
+
+Criar o arquivo .prettierrc.js:
+module.exports = {
+  printWidth: 80,
+  tabWidth: 2,
+  semi: false,
+  singleQuote: true,
+  trailingComma: 'es5',
+  jsxBracketSameLine: false,
+}
+
+
+Alterar o arquivo babel.config.js:
+module.exports = function(api) {
+  api.cache(true);
+  return {
+    presets: ['babel-preset-expo'],
+    plugins: [
+      ['@babel/plugin-syntax-decorators', { legacy: true }],
+      [
+        'babel-plugin-root-import',
+        {
+          rootPathSuffix: 'src',
+        },
+      ],
+    ],
+  };
+};
+
+
+
+Acessar:
+https://docs.expo.dev/develop/user-interface/fonts/
+
+
+npx expo install expo-font @expo-google-fonts/source-sans-pro
+npx expo install expo-splash-screen
+
+
+
+Alterar o App.js:
+import React from 'react'
+import { Splash } from './src/screens/Splash'
+import {
+  useFonts,
+  SourceSansPro_400Regular,
+  SourceSansPro_600SemiBold,
+  SourceSansPro_700Bold,
+  SourceSansPro_900Black,
+} from '@expo-google-fonts/source-sans-pro'
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
+
+export default function App() {
+  const [fontsLoaded] = useFonts({
+    SourceSansPro_400Regular,
+    SourceSansPro_600SemiBold,
+    SourceSansPro_700Bold,
+    SourceSansPro_900Black,
+  });
+
+  if (fontsLoaded) {
+    SplashScreen.hideAsync();
+  } else {
+    return null;
+  }
+
+  return <Splash />
+}
+
+
+Acrescente no arquivo src\components\atoms\Text\styles.js, a fonte:
+import styled from 'styled-components/native'
+
+export const CustomText = styled.Text`
+  color: ${( {color}) => color || 'white' };
+  margin-top: 10px;
+  font-size: 24px;
+  font-family: 'SourceSansPro_700Bold';
+`;
+
+
+
+Criar em src uma pasta styles e dentro os arquivos:
+1. colors.js:
+export const color = {
+  white: '#FFFFFF',
+  light: '#E5E5E5',
+  red: '#E60C0D',
+  dark: '#161616',
+  black: '#000000',
+}
+
+
+2. fonts.js:
+export const fonts = {
+  regular: 'SourceSansPro_400Regular',
+  semiBold: 'SourceSansPro_600SemiBold',
+  bold: 'SourceSansPro_700Bold',
+  black: 'SourceSansPro_900Black',
+}
+
+
+3. metrics.js:
+import { Dimensions, PixelRatio } from 'react-native'
+
+const { width } = Dimensions.get('window')
+
+const figmaWidth = 375
+
+const px = (valuePx) => {
+  const widthPercent = (valuePx / figmaWidth) * 100
+  const screenPixel = PixelRatio.roundToNearestPixel(
+    (width * parseFloat(widthPercent)) / 100
+  )
+  return screenPixel
+}
+
+export const metrics = {
+  px,
+}
+
+
+4. theme.js:
+import { colors } from './colors'
+import { fonts } from './fonts'
+import { metrics } from './metrics'
+
+export const theme = {
+    colors,
+    fonts,
+    metrics,
+}
+
+
+5. index.js:
+export * from './theme'
+
+
+
+Altere o código do App.js:
+import React from 'react'
+import { Splash } from './src/screens/Splash'
+import { ThemeProvider } from 'styled-components'
+import {
+  useFonts,
+  SourceSansPro_400Regular,
+  SourceSansPro_600SemiBold,
+  SourceSansPro_700Bold,
+  SourceSansPro_900Black,
+} from '@expo-google-fonts/source-sans-pro'
+import * as SplashScreen from 'expo-splash-screen'
+import { theme } from './src/styles'
+
+SplashScreen.preventAutoHideAsync()
+
+export default function App() {
+  const [fontsLoaded] = useFonts({
+    SourceSansPro_400Regular,
+    SourceSansPro_600SemiBold,
+    SourceSansPro_700Bold,
+    SourceSansPro_900Black,
+  })
+
+  if (fontsLoaded) {
+    SplashScreen.hideAsync()
+  } else {
+    return null
+  }
+
+  return (
+    <ThemeProvider theme={theme}>
+      <Splash />
+    </ThemeProvider>
+  )
+}
+
+
+
+Volte ao src\components\atoms\Text\styles.js:
+import styled from 'styled-components/native'
+
+export const CustomText = styled.Text`
+  color: ${({ color, theme }) => color || theme.colors.white};
+  margin-top: ${({ theme }) => theme.metrics.px(10)}px;
+  font-size: ${({ theme }) => theme.metrics.px(24)}px;
+  font-family: ${({ theme }) => theme.fonts.bold};
+`
